@@ -1,17 +1,35 @@
 {
   "name": "manus-desktop",
-  "version": "1.0.0",
-  "description": "A lightweight Linux desktop wrapper for Manus built with Electron",
+  "version": "1.1.0",
+  "description": "A powerful Linux desktop wrapper for Manus with local agent capabilities",
   "main": "index.js",
+  "author": "Manus Community",
+  "license": "MIT",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder"
   },
   "dependencies": {
-    "electron": "latest",
-    "electron-window-state": "latest"
+    "electron-window-state": "^5.0.3"
   },
   "devDependencies": {
-    "electron-builder": "latest"
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.manus.desktop",
+    "productName": "Manus",
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "snap"
+      ],
+      "category": "Utility",
+      "icon": "icon.png"
+    },
+    "directories": {
+      "output": "dist"
+    }
   }
 }

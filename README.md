@@ -1,30 +1,66 @@
-# Manus Desktop for Linux
+# Manus Desktop for Linux (Enhanced)
 
-A lightweight, native-like desktop wrapper for Manus built with Electron. This app provides a dedicated window and system tray integration for a seamless Manus experience on Linux.
+A powerful, native-like desktop wrapper for Manus built with Electron, specifically optimized for Linux systems. This version goes beyond a simple web wrapper by implementing the core "My Computer" local agent capabilities found in the official Windows and macOS versions.
 
----
+## 🌟 Key Features
 
-## 🚀 Quick Start (AppImage)
+- **My Computer Integration**: Enables Manus to interact with your local file system and execute terminal commands (via secure IPC bridge).
+- **System Tray Support**: Runs in the background with a dedicated tray icon for quick access.
+- **Global Shortcut**: Summon Manus instantly from anywhere using `Alt + Space`.
+- **Wayland Optimized**: Automatically detects Wayland sessions and applies necessary Electron flags for crisp rendering.
+- **Window State Persistence**: Remembers your window position and size across restarts.
+- **Security First**: Uses `contextIsolation` and a dedicated `preload.js` script to ensure secure communication between the web app and your system.
+- **Offline Support**: Custom error page with intelligent retry logic.
 
-The easiest way to run Manus on any Linux distribution is using the **AppImage**.
+## 🚀 Installation
 
-1. **Download** the latest `Manus-1.0.0.AppImage` from the [Releases](https://github.com/wsochi4-os/manus-desktop-linux/releases) page.
-2. 2. **Make it executable**:
-   3.    ```bash
-            chmod +x Manus-1.0.0.AppImage
-            ```
-         3. **Run it**:
-         4.    ```bash
-                  ./Manus-1.0.0.AppImage
-                  ```
+### Using AppImage (Recommended)
+1. Download the latest `Manus-x.x.x.AppImage` from the Releases page.
+2. Make it executable:
+   ```bash
+   chmod +x Manus-x.x.x.AppImage
+   ```
+3. Run it:
+   ```bash
+   ./Manus-x.x.x.AppImage
+   ```
 
-               ---
+### Native Packages
+We provide `.deb` for Debian/Ubuntu-based systems and `.snap` packages.
 
-           ## 📦 Installation Guides by Distribution
+## 🛠️ Development & Building
 
-     ### Ubuntu / Debian / Linux Mint / Pop!_OS
-   If you prefer a native `.deb` package (if available in releases) or want to integrate the AppImage:
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or pnpm
 
-   **Using AppImageLauncher (Recommended):**
-   1. Install [AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher).
-   2. 2. Double-click the `Manus-1.0.
+### Setup
+```bash
+git clone https://github.com/wsochi4-os/manus-desktop-linux.git
+cd manus-desktop-linux
+npm install
+```
+
+### Run in Development
+```bash
+npm start
+```
+
+### Build for Linux
+```bash
+npm run build
+```
+The packaged apps will be available in the `dist/` directory.
+
+## ⌨️ Shortcuts
+- **Alt + Space**: Toggle Manus window visibility.
+- **Ctrl + R**: Reload the application.
+
+## 🛡️ Security
+This application uses Electron's best practices for security:
+- `nodeIntegration` is disabled in the renderer.
+- `contextIsolation` is enabled.
+- All system-level operations (file access, command execution) are handled via a secure IPC bridge in `preload.js`.
+
+## 📄 License
+MIT License - see the [LICENSE](LICENSE) file for details.
