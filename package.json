@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "description": "A powerful Linux desktop wrapper for Manus with local agent capabilities",
   "main": "index.js",
-  "author": "Manus Community <community@manus.im>",
+  "author": "Manus Community <soweto.t@zohomail.eu>",
   "license": "MIT",
   "scripts": {
     "start": "electron .",
