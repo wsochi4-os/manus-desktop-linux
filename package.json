@@ -8,9 +8,10 @@
     "build": "electron-builder"
   },
   "dependencies": {
-    "electron": "^latest"
+    "electron": "latest",
+    "electron-window-state": "latest"
   },
   "devDependencies": {
-    "electron-builder": "^latest"
+    "electron-builder": "latest"
   }
 }

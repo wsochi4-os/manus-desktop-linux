@@ -1,14 +1,23 @@
 const { app, BrowserWindow, Tray, Menu, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const windowStateKeeper = require('electron-window-state');
 
 let mainWindow;
 let tray;
 
 function createWindow() {
+  // Load the previous state with fallback to defaults
+  const mainWindowState = windowStateKeeper({
+    defaultWidth: 1200,
+    defaultHeight: 800
+  });
+
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
     title: 'Manus',
     icon: path.join(__dirname, 'icon.png'),
     webPreferences: {
@@ -16,6 +25,11 @@ function createWindow() {
       contextIsolation: true,
     },
   });
+
+  // Let us register listeners on the window, so we can update the state
+  // automatically (the listeners will be removed when the window is closed)
+  // and restore the maximized state, if it was maximized.
+  mainWindowState.manage(mainWindow);
 
   mainWindow.loadURL('https://manus.im').catch(err => {
     console.error('Failed to load URL:', err);
