@@ -1,0 +1,16 @@
+{
+  "name": "manus-desktop",
+  "version": "1.0.0",
+  "description": "A lightweight Linux desktop wrapper for Manus built with Electron",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "electron": "^latest"
+  },
+  "devDependencies": {
+    "electron-builder": "^latest"
+  }
+}
