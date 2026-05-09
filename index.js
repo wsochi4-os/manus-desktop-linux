@@ -3,9 +3,11 @@ const path = require('path');
 const fs = require('fs');
 const { exec } = require('child_process');
 const windowStateKeeper = require('electron-window-state');
+const MCPManager = require('./mcp-manager');
 
 let mainWindow;
 let tray;
+let mcpManager = null;
 
 // Handle Wayland support
 if (process.env.XDG_SESSION_TYPE === 'wayland') {
@@ -86,6 +88,42 @@ ipcMain.on('execute-command', (event, command) => {
   });
 });
 
+// IPC Handler for MCP tool calls
+ipcMain.handle('mcp-call-tool', async (event, toolName, args) => {
+  try {
+    if (!mcpManager || !mcpManager.isReady()) {
+      throw new Error('MCP client is not connected');
+    }
+    const result = await mcpManager.callTool(toolName, args);
+    return { success: true, data: result };
+  } catch (error) {
+    console.error('[IPC] Error in mcp-call-tool:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+// IPC Handler to get available MCP tools
+ipcMain.handle('mcp-get-tools', async (event) => {
+  try {
+    if (!mcpManager) {
+      return { success: false, error: 'MCP manager not initialized' };
+    }
+    const tools = mcpManager.getTools();
+    return { success: true, data: tools };
+  } catch (error) {
+    console.error('[IPC] Error in mcp-get-tools:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+// IPC Handler to check MCP connection status
+ipcMain.handle('mcp-status', async (event) => {
+  return {
+    connected: mcpManager ? mcpManager.isReady() : false,
+    toolCount: mcpManager ? mcpManager.getTools().length : 0
+  };
+});
+
 ipcMain.on('read-file', (event, filePath) => {
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) event.reply('error-message', `Failed to read file: ${err.message}`);
@@ -104,7 +142,16 @@ ipcMain.on('reload-app', () => {
   if (mainWindow) mainWindow.loadURL('https://manus.im');
 });
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  // Initialize MCP Manager
+  mcpManager = new MCPManager();
+  const mcpInitialized = await mcpManager.initialize();
+  if (mcpInitialized) {
+    console.log('[Main] MCP Manager initialized successfully');
+  } else {
+    console.warn('[Main] MCP Manager initialization failed, continuing without MCP support');
+  }
+
   createWindow();
   createTray();
 
@@ -119,12 +166,20 @@ app.whenReady().then(() => {
   });
 });
 
-app.on('will-quit', () => {
+app.on('will-quit', async () => {
   globalShortcut.unregisterAll();
+  if (mcpManager) {
+    await mcpManager.shutdown();
+  }
 });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+app.on('window-all-closed', async () => {
+  if (process.platform !== 'darwin') {
+    if (mcpManager) {
+      await mcpManager.shutdown();
+    }
+    app.quit();
+  }
 });
 
 app.on('activate', () => {

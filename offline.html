@@ -1,17 +1,362 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Offline - Manus</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manus - Offline</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #f5f5f5; }
-        h1 { color: #333; }
-        p { color: #666; }
-        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .mcp-status {
+            background: #f5f5f5;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            text-align: left;
+        }
+
+        .mcp-status h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .status-indicator.connected {
+            background: #4caf50;
+        }
+
+        .status-indicator.disconnected {
+            background: #f44336;
+        }
+
+        .status-text {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .tool-count {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .tools-list {
+            background: #f9f9f9;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .tools-list h4 {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .tool-item {
+            font-size: 12px;
+            color: #555;
+            padding: 4px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tool-item:last-child {
+            border-bottom: none;
+        }
+
+        .actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #efefef;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .features {
+            text-align: left;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+
+        .features h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .feature-icon {
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+            min-width: 20px;
+        }
+
+        .error {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-size: 13px;
+        }
     </style>
 </head>
 <body>
-    <h1>Connection Error</h1>
-    <p>Unable to load Manus. Please check your internet connection.</p>
-    <button onclick="window.manusAPI.send('reload-app')">Retry</button>
+    <div class="container">
+        <div class="logo">🚀</div>
+        <h1>Manus Desktop</h1>
+        <p class="status">Connecting to Manus services...</p>
+
+        <div class="mcp-status">
+            <h3>
+                <span class="status-indicator disconnected" id="statusIndicator"></span>
+                <span class="status-text">MCP Status: <span id="statusText">Checking...</span></span>
+            </h3>
+            <div class="tool-count" id="toolCount"></div>
+            <div class="tools-list" id="toolsList" style="display: none;">
+                <h4>Available Tools</h4>
+                <div id="toolsContent"></div>
+            </div>
+        </div>
+
+        <div id="errorMessage" class="error" style="display: none;"></div>
+
+        <div class="actions">
+            <button class="btn-primary" onclick="reloadApp()">Reload</button>
+            <button class="btn-secondary" onclick="checkMCPStatus()">
+                <span class="loading" id="checkLoader" style="display: none;"></span>
+                Check MCP Status
+            </button>
+        </div>
+
+        <div class="features">
+            <h3>Available Features</h3>
+            <div class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Execute shell commands with real-time output</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Manage files and directories</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Process management and monitoring</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Execute code in Python, Node.js, and R</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Data analysis and file format support</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>Document editing (Excel, PDF, Word)</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check MCP status on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            checkMCPStatus();
+            // Check every 5 seconds
+            setInterval(checkMCPStatus, 5000);
+        });
+
+        async function checkMCPStatus() {
+            try {
+                const loader = document.getElementById('checkLoader');
+                loader.style.display = 'inline-block';
+
+                if (!window.mcpAPI) {
+                    showError('MCP API not available');
+                    loader.style.display = 'none';
+                    return;
+                }
+
+                const status = await window.mcpAPI.getStatus();
+                const indicator = document.getElementById('statusIndicator');
+                const statusText = document.getElementById('statusText');
+                const toolCount = document.getElementById('toolCount');
+                const errorDiv = document.getElementById('errorMessage');
+
+                if (status.connected) {
+                    indicator.className = 'status-indicator connected';
+                    statusText.textContent = 'Connected';
+                    toolCount.textContent = `${status.toolCount} tools available`;
+                    errorDiv.style.display = 'none';
+
+                    // Fetch and display tools
+                    const toolsResponse = await window.mcpAPI.getTools();
+                    if (toolsResponse.success && toolsResponse.data.length > 0) {
+                        displayTools(toolsResponse.data);
+                    }
+                } else {
+                    indicator.className = 'status-indicator disconnected';
+                    statusText.textContent = 'Disconnected';
+                    toolCount.textContent = '';
+                    showError('MCP server is not connected. The app will continue to function with basic features.');
+                }
+
+                loader.style.display = 'none';
+            } catch (error) {
+                console.error('Error checking MCP status:', error);
+                showError(`Error: ${error.message}`);
+                document.getElementById('checkLoader').style.display = 'none';
+            }
+        }
+
+        function displayTools(tools) {
+            const toolsList = document.getElementById('toolsList');
+            const toolsContent = document.getElementById('toolsContent');
+
+            if (tools.length === 0) {
+                toolsList.style.display = 'none';
+                return;
+            }
+
+            toolsContent.innerHTML = tools
+                .slice(0, 10)
+                .map(tool => `<div class="tool-item">• ${tool.name}</div>`)
+                .join('');
+
+            if (tools.length > 10) {
+                toolsContent.innerHTML += `<div class="tool-item"><em>... and ${tools.length - 10} more</em></div>`;
+            }
+
+            toolsList.style.display = 'block';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function reloadApp() {
+            if (window.manusAPI) {
+                window.manusAPI.send('reload-app', {});
+            } else {
+                location.reload();
+            }
+        }
+    </script>
 </body>
 </html>
