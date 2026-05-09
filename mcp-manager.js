@@ -6,7 +6,15 @@
 
 const { spawn } = require('child_process');
 const path = require('path');
-const { Client, StdioClientTransport } = require('@modelcontextprotocol/sdk/client/index.js');
+
+// Use dynamic import for ESM module in CommonJS
+let Client, StdioClientTransport;
+const mcpPromise = import('@modelcontextprotocol/sdk/client/index.js').then(m => {
+  Client = m.Client;
+  return import('@modelcontextprotocol/sdk/client/stdio.js');
+}).then(m => {
+  StdioClientTransport = m.StdioClientTransport;
+});
 
 class MCPManager {
   constructor() {
@@ -22,6 +30,7 @@ class MCPManager {
   async initialize() {
     try {
       console.log('[MCP] Initializing MCP Manager...');
+      await mcpPromise;
       
       // Spawn the DesktopCommanderMCP server process
       this.serverProcess = spawn('npx', [
