@@ -1,39 +1,45 @@
 {
-  "name": "manus-desktop",
-  "version": "1.1.0",
-  "description": "A powerful Linux desktop wrapper for Manus with local agent capabilities",
-  "main": "index.js",
-  "author": "Manus Community <soweto.t@zohomail.eu>",
-  "license": "MIT",
+  "name": "manus-desktop-linux",
+  "version": "1.0.0",
+  "description": "Manus Desktop App for Linux",
+  "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder",
-    "postinstall": "electron-builder install-app-deps"
+    "build": "electron-builder --linux deb appimage"
   },
+  "author": "Manus <support@manus.ai>",
+  "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^0.7.0",
-    "@wonderwhy-er/desktop-commander": "^2.0.0",
-    "electron-window-state": "^5.0.3",
-    "playwright": "^1.59.1"
+    "@electron/remote": "^2.1.2",
+    "electron-tray": "^0.1.1",
+    "electron-window-state": "^5.0.3"
   },
   "devDependencies": {
-    "electron": "^28.0.0",
-    "electron-builder": "^24.9.1"
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
   },
   "build": {
-    "appId": "com.manus.desktop",
-    "productName": "Manus",
-    "linux": {
-      "target": [
-        "AppImage",
-        "deb",
-        "snap"
-      ],
-      "category": "Utility",
-      "icon": "icon.png"
-    },
+    "appId": "com.manus.desktop.linux",
+    "productName": "Manus Desktop",
     "directories": {
       "output": "dist"
-    }
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "AppImage"
+      ],
+      "category": "Utility",
+      "desktop": {
+        "StartupWMClass": "ManusDesktop"
+      }
+    },
+    "files": [
+      "**/*",
+      "!node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}"
+    ],
+    "extraResources": [
+      "icon.png"
+    ]
   }
 }
